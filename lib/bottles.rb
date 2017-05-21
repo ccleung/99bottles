@@ -6,15 +6,14 @@ class Bottles
   end
 
   def verses(start_num_bottles, end_num_bottles)
-    verses = start_num_bottles.downto(end_num_bottles).map do |num_bottles|
+    start_num_bottles.downto(end_num_bottles).map do |num_bottles|
       verse(num_bottles)
-    end
-
-    verses.join("\n")
+    end.join("\n")
   end
 
   def verse(num_bottles)
     bottle = BottleBuilder.bottle_for(num_bottles)
+
     "#{bottle.num_bottles_verse.capitalize} on the wall," \
     " #{bottle.num_bottles_verse}.\n" \
     "#{bottle.take_action}," \
