@@ -14,35 +14,68 @@ class Bottles
   end
 
   def verse(num_bottles)
-    verse =
-      "#{num_to_s(BOTTLE_NAME, num_bottles).capitalize} of beer on the wall," \
-      " #{num_to_s(BOTTLE_NAME, num_bottles)} of beer.\n" \
+    bottle = BottleBuilder.bottle_for(num_bottles)
+    "#{bottle.num_bottles_verse.capitalize} on the wall," \
+    " #{bottle.num_bottles_verse}.\n" \
+    "#{bottle.take_action}," \
+    " #{bottle.build_next.num_bottles_verse} on the wall.\n"
+  end
+end
 
-    verse +=
-      if num_bottles > 0
-        "Take #{num_to_take(num_bottles)} down and pass it around," \
-        " #{num_to_s(BOTTLE_NAME, num_bottles - 1)} of beer on the wall.\n"
-      else
-        "Go to the store and buy some more, 99 bottles of beer on the wall.\n"
-      end
-
-    verse
+class NoBottles
+  def take_action
+    'Go to the store and buy some more'
   end
 
-  private
-  # taking
-  # -1 then fill up to 99
-  # no more bottles
-
-  def num_to_take(num_bottles)
-    num_bottles == 1 ? 'it' : 'one'
+  def num_bottles_verse
+    "no more bottles of beer"
   end
 
-  def num_to_s(word, num)
-    num == 0 ? 'no more bottles' : "#{num} #{pluralize(word, num)}"
+  def build_next
+    BottleBuilder.bottle_for(99)
+  end
+end
+
+class OneBottle
+  def build_next
+    BottleBuilder.bottle_for(0)
   end
 
-  def pluralize(word, num)
-    num == 1 ? word : "#{word}s"
+  def take_action
+    "Take it down and pass it around"
+  end
+
+  def num_bottles_verse
+    '1 bottle of beer'
+  end
+end
+
+class Bottle
+  def initialize(num)
+    @num = num
+  end
+
+  def take_action
+    "Take one down and pass it around"
+  end
+
+  def num_bottles_verse
+    "#{@num} bottles of beer"
+  end
+
+  def build_next
+    BottleBuilder.bottle_for(@num - 1)
+  end
+end
+
+class BottleBuilder
+  def self.bottle_for(num)
+    if num == 0
+      NoBottles.new
+    elsif num == 1
+      OneBottle.new
+    else
+      Bottle.new(num)
+    end
   end
 end
