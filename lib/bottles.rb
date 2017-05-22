@@ -69,9 +69,10 @@ end
 
 class BottleBuilder
   def self.bottle_for(num)
-    if num == 0
+    case num
+    when 0
       NoBottles.new
-    elsif num == 1
+    when 1
       OneBottle.new
     else
       Bottle.new(num)
